@@ -11,7 +11,7 @@ SET( MYSQLPP_SOURCE_FILES
         field_types.cpp
         manip.cpp
         myset.cpp
-#        mysql++.cpp
+        mysql++.cpp
         mystring.cpp
         null.cpp
         options.cpp
@@ -50,7 +50,6 @@ SET( MYSQLPP_HEADER_FILES
         insertpolicy.h
         manip.h
         myset.h
-        mysql++.h
         mystring.h
         noexceptions.h
         null.h
@@ -75,7 +74,7 @@ SET( MYSQLPP_HEADER_FILES
         utility.h
         vallist.h
         wnp_connection.h
-#        ${CMAKE_BINARY_DIR}/lib/mysql++.h
+        ${CMAKE_BINARY_DIR}/lib/mysql++.h
         querydef.h
 )
 
@@ -87,22 +86,19 @@ IF( STATIC_BUILD )
     ADD_LIBRARY( mysqlpp STATIC ${MYSQLPP_HEADER_FILES} ${MYSQLPP_SOURCE_FILES} )
 ENDIF()
 
-TARGET_INCLUDE_DIRECTORIES( mysqlpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
+TARGET_INCLUDE_DIRECTORIES( mysqlpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} PRIVATE ${CMAKE_BINARY_DIR}/lib/ )
 
 IF(MYSQLPP_XCODE)
     SET_PROPERTY(TARGET mysqlpp APPEND PROPERTY COMPILE_OPTIONS -DMYSQLPP_XCODE)
 ENDIF()
 
-SET_TARGET_PROPERTIES(mysqlpp PROPERTIES PUBLIC_HEADER "wnp_connection.h")
+SET_TARGET_PROPERTIES(mysqlpp PROPERTIES PUBLIC_HEADER "${MYSQLPP_HEADER_FILES}")
 
 TARGET_COMPILE_OPTIONS(mysqlpp PUBLIC ${COMPILE_OPTIONS})
 
-#configure_file(mysql++.h.in mysql++.h)
+configure_file(mysql++.h.in mysql++.h)
 
-INSTALL( TARGETS mysqlpp LIBRARY DESTINATION lib)
-#INSTALL(
-#    DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
-#    DESTINATION "include"
-#    FILES_MATCHING
-#        PATTERN "*.h"
-#)
+INSTALL( TARGETS mysqlpp
+    LIBRARY DESTINATION lib
+    PUBLIC_HEADER DESTINATION include/mysql++
+)
